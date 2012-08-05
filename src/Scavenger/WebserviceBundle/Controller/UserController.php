@@ -210,11 +210,13 @@ class UserController extends Controller
 
     private function handleGetResponse($response, $user)
     {
+        $serializer = $this->container->get('serializer');
+        $json = $serializer->serialize($user, 'json');
+
         $this->assertUserExists($user);
 
         $response->setStatusCode(200);
-
-        $response->setContent(json_encode($user));
+        $response->setContent($json);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
