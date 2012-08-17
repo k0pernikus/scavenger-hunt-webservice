@@ -189,7 +189,7 @@ class UserController extends Controller
         $this->assertUserExists($user);
         $image = $user->getImage(); 
         
-        return $this->handleGetResponse(new Response(), array($image));
+        return $this->handleGetResponse(new Response(), array($image), $type="text/plain");
     }
 
 
@@ -231,14 +231,19 @@ class UserController extends Controller
         }
     }
 
-    private function handleGetResponse($response, $user)
+    private function handleGetResponse($response, $data, $type = "json")
     {
-        $this->assertUserExists($user);
-
         $response->setStatusCode(200);
 
-        $response->setContent(json_encode($user));
-        $response->headers->set('Content-Type', 'application/json');
+        if ($type == "json") {
+            $content = json_encode($data);
+            $response->headers->set('Content-Type', 'application/json');
+        } else {
+            $content = $data[0];
+            $response->headers->set('Content-Type', 'text/plain');
+        }
+
+        $response->setContent($content);
 
         return $response;
     }
